@@ -5,7 +5,7 @@ Connect-MsolService
 Get-MsolAccountSku
 
 # 3
-Get-MsolAccountSku | Format-List AccountSkuId, SkuPartNumber, ActiveUnits, ConsumedUnits
+Get-MsolAccountSku | Format-List AccountSkuId, SkuPartNumber, ActiveUnits, ConsumedUnits # Alias for format-list is fl
 
 # 4
 Get-MsolRole

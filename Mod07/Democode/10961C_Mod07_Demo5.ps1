@@ -1,5 +1,14 @@
 ﻿#Create a hash table of user names and their department
-$users = @{"Lara"="IT";"Peter"="Managers";"Sang"="Sales"}
+$users = @{
+    "Lara"="IT"
+    "Peter"="Managers"
+    "Sang"="Sales"
+}
+
+$groups = @{
+    'IT' = 'Lara', 'Peter'
+    'Sales' = 'Sang'
+}
 
 #Display the contents of the hash table
 $users

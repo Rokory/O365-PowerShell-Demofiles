@@ -8,7 +8,7 @@ Get-AzureAdGroup | Where MailEnabled -eq $true
 Get-AzureAdGroup | Where MailEnabled
 
 # 2
-Get-AzureAdUser | Where-Object –FilterScript { $PSItem.Department -like 'Op*' } | Select-Object -Property Displayname, Userprincipalname
+Get-AzureAdUser | Where-Object –FilterScript { $PSItem.Department -like 'Op*' } | Select-Object -Property Displayname, Userprincipalname, Department
 
 # 3
 Get-AzureAdUser | Where-Object –FilterScript { $PSItem.Department -eq 'IT' -and $PSItem.Surname -like 'M*'  } | Select-Object -Property Surname, Department, Userprincipalname

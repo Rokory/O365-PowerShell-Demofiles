@@ -34,5 +34,10 @@ Add-AzureADGroupMember -RefObjectId (
     Get-AzureADUser -SearchString 'Max' |
     Select-Object -ExpandProperty ObjectId
 )
+# alternative
+Get-AzureAdGroup -SearchString 'Sales' |
+Add-AzureADGroupMember -RefObjectId (
+    (Get-AzureADUser -SearchString 'Max').ObjectId
+)
 
 

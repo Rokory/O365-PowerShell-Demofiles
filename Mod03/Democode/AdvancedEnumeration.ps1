@@ -9,3 +9,11 @@ ForEach-Object {
     Get-AzureAdGroup -SearchString 'IT' | 
     Add-AzureADGroupMember -RefObjectId $PSItem.ObjectId
 }
+
+$azureAdGroup = Get-AzureAdGroup -SearchString 'Sales'
+Get-AzureADUser -Filter "Department eq 'Sales'" |
+ForEach-Object {
+    $azureAdGroup | 
+    Add-AzureADGroupMember -RefObjectId $PSItem.ObjectId
+}
+

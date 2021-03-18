@@ -10,9 +10,9 @@ Sort-Object WhenCreated -Descending
 Get-MsolUser | 
 Select-Object Displayname, @{
     n='Age'
-    e={
-        New-TimeSpan -Start $PSItem.WhenCreated -End (Get-Date) |
-        Select-Object -ExpandProperty Days  #
+    e={ '{0:n2}' -f `
+        ((New-TimeSpan -Start $PSItem.WhenCreated -End (Get-Date) |
+        Select-Object -ExpandProperty Days) / 365.25)
     }
 } | 
 Sort-Object Age -Descending

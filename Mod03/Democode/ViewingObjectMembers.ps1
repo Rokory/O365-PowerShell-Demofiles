@@ -1,8 +1,8 @@
 # 1
 Connect-MsolService
 
-# 2
+# Get license members
 Get-MsolAccountSku | Get-Member
 
-# 3
+# Get group members
 Get-MsolGroup | Get-Member

@@ -9,4 +9,4 @@ Get-Date | Select-Object DayOfWeek
 
 # 4
 Get-MsolUser | Group-Object UserType
-Get-MsolUser | Format-Table -GroupBy UserType
+Get-MsolUser | Sort-Object UserType | Format-Table -GroupBy UserType

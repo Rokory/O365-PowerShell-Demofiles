@@ -13,7 +13,7 @@ Get-AzureAdUser | ConvertTo-JSON > "$([Environment]::GetFolderPath('MyDocuments'
 # 4
 Get-AzureAdUser | ConvertTo-CSV | Out-File "$([Environment]::GetFolderPath('MyDocuments'))\users.csv"
 # or run 
-Get-AzureAdUser | Export-CSV "$([Environment]::GetFolderPath('MyDocuments'))\users.csv"
+Get-AzureAdUser | Export-CSV "$([Environment]::GetFolderPath('MyDocuments'))\users.csv" -NoTypeInformation
 
 # 5
 Notepad "$([Environment]::GetFolderPath('MyDocuments'))\users.csv"

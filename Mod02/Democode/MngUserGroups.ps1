@@ -4,11 +4,11 @@
 Connect-MsolService
 Connect-AzureAd
 
-# 1 
+# create group
 New-MsolGroup -DisplayName 'Helpdesk'
-New-AzureADGroup -DisplayName 'Sales' -MailEnabled $false -SecurityEnabled $true -MailNickName 'Sales'
+New-AzureADGroup -DisplayName 'Sales' -MailEnabled $true -SecurityEnabled $true -MailNickName 'Sales'
 
-# 2
+# create user
 New-MsolUser -UserPrincipalName Jane.Doe@etc2103.onmicrosoft.com -DisplayName 'Jane Doe' -Department 'IT'
 
 # 3
@@ -28,17 +28,18 @@ Add-AzureADGroupMember -RefObjectId (
     Select-Object -ExpandProperty ObjectId
 )
 
-# 4
+# Get members
 Get-MsolGroupMember -GroupObjectId (
     Get-MsolGroup -SearchString 'Helpdesk' | 
     Select-Object -ExpandProperty ObjectId
 )
 Get-AzureAdGroup -SearchString 'Sales' | Get-AzureADGroupMember
 
-# 5
+# Get memberships of user
 Get-AzureADUser -SearchString 'Max' | Get-AzureADUserMembership
 
 New-AzureADGroup -DisplayName 'IT' -MailEnabled $false -SecurityEnabled $true -MailNickName 'IT'
+
 Get-AzureAdGroup -SearchString 'IT' | Add-AzureADGroupMember -RefObjectId ( 
     Get-AzureADUser -Filter "Department eq 'IT'" |
     Select-Object -ExpandProperty ObjectId
@@ -47,5 +48,5 @@ Get-AzureAdGroup -SearchString 'IT' | Add-AzureADGroupMember -RefObjectId (
 Get-AzureADUser -Filter "Department eq 'IT'" |
 ForEach-Object {
     Get-AzureAdGroup -SearchString 'IT' | 
-    Add-AzureADGroupMember -RefObjectId $PSItem.ObjectId
+    Add-AzureADGroupMember -RefObjectId $PSItem.ObjectId # $PSItem often is written as $_
 }
