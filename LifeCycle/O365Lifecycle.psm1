@@ -4,6 +4,7 @@
     or to %programfiles%\WindowsPowerShell\Modules\O365LifeCycle
     to install this as a module
 #>
+#Requires -Module MsOnline, ExchangeOnlineManage
 function New-O365User {
     [CmdletBinding()]
     param (
@@ -64,4 +65,41 @@ function New-O365User {
         Password = $msolUser.Password
     }
     #endregion
+}
+
+function Remove-O365User {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]
+        $UserPrincipalName
+    )
+    # Change SMTP address
+    $exoMailbox = Get-EXOMailbox -UserPrincipalName $UserPrincipalName
+    $primarySmtpAddress = $exoMailbox.PrimarySmtpAddress
+    $emailAddresses = $exoMailbox.EmailAddresses # | 
+        # Where-Object {
+        #     $PSItem -notlike "*:$primarySmtpAddress"
+        # }
+    
+    $newEmailAddresses = @()
+    foreach ($emailAddress in $emailAddresses) {
+        $colonPos = $emailAddress.IndexOf(':')
+        $emailAddress = $emailAddress.Insert($colonPos + 1, 'Austritt.')
+        $newEmailAddresses += $emailAddress
+    }
+
+    $exoMailbox | Set-Mailbox -EmailAddresses $newEmailAddresses
+
+    # Change UPN
+
+    $newUserPrincipalName = "Austritt.$UserPrincipalName"
+    Set-MsolUserPrincipalName `
+        -UserPrincipalName $UserPrincipalName `
+        -NewUserPrincipalName $newUserPrincipalName
+
+    # Convert user mailbox to shared mailbox
+    # Remove license
+    # Block login
+    # Remove user
 }
