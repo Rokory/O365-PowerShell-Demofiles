@@ -78,8 +78,23 @@ function Remove-O365User {
         [bool]
         $RemoveUser = $true
     )
-    # Change SMTP address
+    
     $exoMailbox = Get-EXOMailbox -UserPrincipalName $UserPrincipalName
+    $msolUser = Get-MsolUser -UserPrincipalName $UserPrincipalName
+
+    # Convert user mailbox to shared mailbox
+
+    $exoMailbox | Set-Mailbox -Type Shared
+
+    # Remove license
+
+    if ($RemoveLicense) {
+        Set-MsolUserLicense `
+            -ObjectId $msolUser.ObjectId `
+            -RemoveLicenses $msolUser.Licenses.AccountSkuId
+    }
+
+    #region Change SMTP address
     $primarySmtpAddress = $exoMailbox.PrimarySmtpAddress
     $emailAddresses = $exoMailbox.EmailAddresses # | 
         # Where-Object {
@@ -94,26 +109,18 @@ function Remove-O365User {
     }
 
     $exoMailbox | Set-Mailbox -EmailAddresses $newEmailAddresses
+    #endregion
 
-    # Convert user mailbox to shared mailbox
-
-    $exoMailbox | Set-Mailbox -Type Shared
+    # If working with AD Connect, this part musst be rewritten to work
+    # against the local AD
 
     # Change UPN
-    $msolUser = Get-MsolUser -UserPrincipalName $UserPrincipalName
 
     $newUserPrincipalName = "Austritt.$UserPrincipalName"
     Set-MsolUserPrincipalName `
         -ObjectId $msolUser.ObjectId `
         -NewUserPrincipalName $newUserPrincipalName
 
-    # Remove license
-
-    if ($RemoveLicense) {
-        Set-MsolUserLicense `
-            -ObjectId $msolUser.ObjectId `
-            -RemoveLicenses $msolUser.Licenses.AccountSkuId
-    }
 
 
     # Block login
