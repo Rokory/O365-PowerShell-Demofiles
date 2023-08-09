@@ -62,7 +62,8 @@ process {
         $sharedMailboxParams.Add('PrimarySmtpAddress', $PrimarySmtpAddress)
     }
 
-    $sharedMailbox = Get-Mailbox -Identity $sharedMailboxParams.Alias -ErrorAction SilentlyContinue
+    $sharedMailbox = Get-Mailbox `
+        -Identity $sharedMailboxParams.Alias -ErrorAction SilentlyContinue
     if ($sharedMailbox) {
         Write-Warning `
             "Existing shared mailbox $(
