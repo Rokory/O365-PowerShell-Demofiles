@@ -23,23 +23,36 @@ begin {
 
 process {
     #region Create mail-enabled security group
+    
     $distributionGroupParams = @{
         Name = "$mailEnabledSecurityGroupPrefix $Name"
         Alias = "$($mailEnabledSecurityGroupPrefix)_$($alias)"
     }
-    $distributionGroup = Get-DistributionGroup -Identity $distributionGroupParams.Alias -ErrorAction SilentlyContinue
+    $distributionGroup = Get-DistributionGroup `
+        -Identity $distributionGroupParams.Alias -ErrorAction SilentlyContinue
     if ($distributionGroup) {
-        Write-Warning "Existing group $($distributionGroup.DisplayName) found. The group will be used for the shared mailbox."
+        Write-Warning `
+            "Existing group $(
+                $distributionGroup.DisplayName
+            ) found. The group will be used for the shared mailbox."
     }    
     if (-not $distributionGroup) {
-        Write-Verbose "Creating mail-enabled security group $($distributionGroupParams.Name)"
-        $distributionGroup = New-DistributionGroup @distributionGroupParams -Type Security
+        Write-Verbose `
+            "Creating mail-enabled security group $(
+                $distributionGroupParams.Name
+            )"
+        $distributionGroup = `
+            New-DistributionGroup @distributionGroupParams -Type Security
     }
     Write-Verbose "Hiding mail-enabled security group from address list."
-    $distributionGroup | Set-DistributionGroup -HiddenFromAddressListsEnabled $true
+    
+    $distributionGroup | 
+    Set-DistributionGroup -HiddenFromAddressListsEnabled $true
+    
     #endregion Create mail-enabled security group
 
     #region Create shared mailbox
+
     $sharedMailboxParams = @{
         Alias = $Alias
         Name = $Name
@@ -51,16 +64,28 @@ process {
 
     $sharedMailbox = Get-Mailbox -Identity $sharedMailboxParams.Alias -ErrorAction SilentlyContinue
     if ($sharedMailbox) {
-        Write-Warning "Existing shared mailbox $($sharedmailbox.Name) found. This mailbox will be configured."
+        Write-Warning `
+            "Existing shared mailbox $(
+                $sharedmailbox.Name
+            ) found. This mailbox will be configured."
     }
     if (-not $sharedMailbox) {
         Write-Verbose "Creating shared mailbox $($sharedMailboxParams.Name)"
         $sharedMailbox = New-Mailbox @sharedMailboxParams -Shared
     }
-    Write-Verbose "Granting $($distributionGroup.Name) full access to shared mailbox."
-    $sharedMailbox | Add-MailboxPermission -AccessRights FullAccess -InheritanceType All -User $distributionGroup.Identity
+    Write-Verbose `
+        "Granting $($distributionGroup.Name) full access to shared mailbox."
+    $sharedMailbox | Add-MailboxPermission `
+        -AccessRights FullAccess `
+        -InheritanceType All `
+        -User $distributionGroup.Identity
+    
     Write-Verbose "Enabling copy of sent messages to shared mailbox."
-    $sharedMailbox | Set-Mailbox -MessageCopyForSentAsEnabled $true -MessageCopyForSendOnBehalfEnabled $true -MessageCopyForSMTPClientSubmissionEnabled $true
+    $sharedMailbox | Set-Mailbox `
+        -MessageCopyForSentAsEnabled $true `
+        -MessageCopyForSendOnBehalfEnabled $true `
+        -MessageCopyForSMTPClientSubmissionEnabled $true
+    
     #endregion Create shared mailbox
     
 }
@@ -68,7 +93,3 @@ process {
 end {
     
 }
-
-
-
-
